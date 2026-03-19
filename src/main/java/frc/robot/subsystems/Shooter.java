@@ -10,9 +10,11 @@ public class Shooter extends SubsystemBase {
 
     private final SparkMax shooterRight; //= new CANSparkMax(17, MotorType.kBrushless);
     private final SparkMax shooterLeft; //= new CANSparkMax(18, MotorType.kBrushless);
+    
 
     SparkMaxConfig leftConfig = new SparkMaxConfig();
     SparkMaxConfig rightConfig = new SparkMaxConfig();
+
 
     public Shooter() {
     shooterRight = new SparkMax(17, MotorType.kBrushless);
@@ -20,7 +22,7 @@ public class Shooter extends SubsystemBase {
 
     rightConfig
         .inverted(true)
-        .follow(shooterLeft);
+        .follow(shooterLeft, true);
 
     shooterRight.configure(
         rightConfig,

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -11,6 +12,16 @@ public class Transfer extends SubsystemBase {
 
     public Transfer() {
         transfer = new SparkMax(21, MotorType.kBrushless); // transfer
+
+        SparkMaxConfig transferConfig = new SparkMaxConfig();
+        transferConfig
+            .inverted(true);
+
+    transfer.configure(
+        transferConfig,
+        SparkMax.ResetMode.kResetSafeParameters,
+        SparkMax.PersistMode.kPersistParameters
+    );
     }
     public void full() {
         transfer.set(1);

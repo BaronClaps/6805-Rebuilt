@@ -145,9 +145,9 @@ public class RobotContainer
     Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(
         driveDirectAngleKeyboard);
 
-    driverXbox.a().onTrue(Commands.runOnce(() -> { shooter.full(); transfer.full(); intake.full();}));
-    driverXbox.b().onTrue(Commands.runOnce(() -> { shooter.stop(); transfer.stop(); }));
-    driverXbox.rightTrigger().onTrue(Commands.runOnce(() -> { intake.full(); }));
+    driverXbox.a().onTrue(Commands.runOnce(() -> { shooter.full(); transfer.full(); intake.set(.25);}));
+    driverXbox.b().onTrue(Commands.runOnce(() -> { shooter.stop(); transfer.stop();}));
+    driverXbox.rightTrigger().onTrue(Commands.runOnce(() -> { intake.set(.4); }));
     driverXbox.leftTrigger().onTrue(Commands.runOnce(() -> { intake.stop(); }));
     driverXbox.leftBumper().onTrue(Commands.runOnce(() -> { transfer.full(); }));
     driverXbox.rightBumper().onTrue(Commands.runOnce(() -> { shooter.full(); }));
