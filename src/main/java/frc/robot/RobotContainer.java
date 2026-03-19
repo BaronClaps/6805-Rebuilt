@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.*;
 import java.io.File;
 import swervelib.SwerveInputStream;
 
@@ -41,6 +41,8 @@ public class RobotContainer
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/"));
   private final Shooter shooter = new Shooter();
+  private final Intake intake = new Intake();
+  private final Transfer transfer = new Transfer();
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing selection of desired auto
   private final SendableChooser<Command> autoChooser;
@@ -143,8 +145,13 @@ public class RobotContainer
     Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(
         driveDirectAngleKeyboard);
 
-    driverXbox.y().onTrue(Commands.runOnce(shooter::full));
-driverXbox.b().onTrue(Commands.runOnce(shooter::stop));
+    driverXbox.a().onTrue(Commands.runOnce(() -> { shooter.full(); transfer.full(); intake.full();}));
+    driverXbox.b().onTrue(Commands.runOnce(() -> { shooter.stop(); transfer.stop(); }));
+    driverXbox.rightTrigger().onTrue(Commands.runOnce(() -> { intake.full(); }));
+    driverXbox.leftTrigger().onTrue(Commands.runOnce(() -> { intake.stop(); }));
+    driverXbox.leftBumper().onTrue(Commands.runOnce(() -> { transfer.full(); }));
+    driverXbox.rightBumper().onTrue(Commands.runOnce(() -> { shooter.full(); }));
+
 
 
 
