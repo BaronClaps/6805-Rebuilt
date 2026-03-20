@@ -37,6 +37,8 @@ public class RobotContainer
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandXboxController driverXbox = new CommandXboxController(0);
+  final         CommandXboxController driverXbox2 = new CommandXboxController(1);
+
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/"));
@@ -145,12 +147,15 @@ public class RobotContainer
     Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(
         driveDirectAngleKeyboard);
 
-    driverXbox.a().onTrue(Commands.runOnce(() -> { shooter.full(); transfer.full(); intake.set(.25);}));
-    driverXbox.b().onTrue(Commands.runOnce(() -> { shooter.stop(); transfer.stop();}));
-    driverXbox.rightTrigger().onTrue(Commands.runOnce(() -> { intake.set(.4); }));
-    driverXbox.leftTrigger().onTrue(Commands.runOnce(() -> { intake.stop(); }));
-    driverXbox.leftBumper().onTrue(Commands.runOnce(() -> { transfer.full(); }));
-    driverXbox.rightBumper().onTrue(Commands.runOnce(() -> { shooter.full(); }));
+    driverXbox2.y().whileTrue(
+        Commands.run(() -> intake.pivotSet(driverXbox2.getRightY()))
+    );
+    driverXbox2.a().onTrue(Commands.runOnce(() -> { shooter.full(); transfer.set(.25); intake.set(.25);}));
+    driverXbox2.b().onTrue(Commands.runOnce(() -> { shooter.stop(); transfer.stop();}));
+    driverXbox2.rightTrigger().onTrue(Commands.runOnce(() -> { intake.set(.4); }));
+    driverXbox2.leftTrigger().onTrue(Commands.runOnce(() -> { intake.stop(); }));
+    driverXbox2.leftBumper().onTrue(Commands.runOnce(() -> { transfer.set(.25); }));
+    driverXbox2.rightBumper().onTrue(Commands.runOnce(() -> { shooter.full(); }));
 
 
 

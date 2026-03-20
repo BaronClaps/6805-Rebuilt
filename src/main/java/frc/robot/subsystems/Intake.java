@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 
-    // private final SparkMax pivot;
+    private final SparkMax pivot;
     private final SparkFlex spin;
     // private final SparkClosedLoopController pivotController;
 
@@ -29,7 +29,7 @@ public class Intake extends SubsystemBase {
     // private static final double kD = 0.0;
 
     public Intake() {
-        // pivot = new SparkMax(19, MotorType.kBrushless);
+        pivot = new SparkMax(19, MotorType.kBrushless);
         spin = new SparkFlex(20, MotorType.kBrushless);
 
         // pivotController = pivot.getClosedLoopController();
@@ -79,5 +79,9 @@ public class Intake extends SubsystemBase {
 
     public void set(double k) {
         spin.set(k);
+    }
+
+    public void pivotSet(double k) {
+        pivot.set(k);
     }
 }
