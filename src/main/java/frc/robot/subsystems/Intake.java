@@ -34,11 +34,12 @@ public class Intake extends SubsystemBase {
 
         // pivotController = pivot.getClosedLoopController();
 
-        // SparkMaxConfig config = new SparkMaxConfig();
+         SparkMaxConfig config = new SparkMaxConfig();
+         config.inverted(true);
         // config.closedLoop.p(kP).i(kI).d(kD);
         // config.idleMode(IdleMode.kBrake);
 
-        // pivot.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        pivot.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
 //     private double degreesToRotations(double degrees) {

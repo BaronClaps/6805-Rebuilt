@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.TimedRobot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -147,14 +148,14 @@ public class RobotContainer
     Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(
         driveDirectAngleKeyboard);
 
-    driverXbox2.y().whileTrue(
-        Commands.run(() -> intake.pivotSet(driverXbox2.getRightY()))
-    );
-    driverXbox2.a().onTrue(Commands.runOnce(() -> { shooter.full(); transfer.set(.25); intake.set(.25);}));
+   intake.setDefaultCommand(
+    Commands.run(() -> intake.pivotSet(driverXbox2.getRightY() / 2), intake)
+);
+    driverXbox2.a().onTrue(Commands.runOnce(() -> { shooter.full(); transfer.set(.5); intake.set(.4);}));
     driverXbox2.b().onTrue(Commands.runOnce(() -> { shooter.stop(); transfer.stop();}));
     driverXbox2.rightTrigger().onTrue(Commands.runOnce(() -> { intake.set(.4); }));
     driverXbox2.leftTrigger().onTrue(Commands.runOnce(() -> { intake.stop(); }));
-    driverXbox2.leftBumper().onTrue(Commands.runOnce(() -> { transfer.set(.25); }));
+    driverXbox2.leftBumper().onTrue(Commands.runOnce(() -> { transfer.set(.5); }));
     driverXbox2.rightBumper().onTrue(Commands.runOnce(() -> { shooter.full(); }));
 
 
