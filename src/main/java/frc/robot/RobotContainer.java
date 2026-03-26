@@ -42,11 +42,11 @@ public class RobotContainer
   final         CommandXboxController driverXbox2 = new CommandXboxController(1);
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  public final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/"));
-  private final Shooter shooter = new Shooter();
-  private final Intake intake = new Intake();
-  private final Transfer transfer = new Transfer();
+  public final Shooter shooter = new Shooter();
+  public final Intake intake = new Intake();
+  public final Transfer transfer = new Transfer();
   private double shootRPM = 0, rpm = 100, transferSpeed = .5, intakeSpeed = .4;
   public double shootSpeed = 0.8;
 
@@ -128,10 +128,6 @@ public class RobotContainer
 
     //Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    SmartDashboard.putData("Field", drivebase.getSwerveDrive().field);
-    SmartDashboard.putNumber("Shooter Velocity", shooter.getVelocity());
-    SmartDashboard.putNumber("Intake Speed", intake.speed());
-    SmartDashboard.putNumber("Transfer Speed", transfer.speed());
 
 
   }
