@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Transfer extends SubsystemBase {
 
     private final SparkMax transfer;
+    private double speed;
 
     public Transfer() {
         transfer = new SparkMax(21, MotorType.kBrushless); // transfer
@@ -36,6 +37,11 @@ public class Transfer extends SubsystemBase {
     }
 
     public void set(double k) {
+        speed = k;
         transfer.set(k);
+    }
+
+    public double speed() {
+        return speed;
     }
 }

@@ -17,6 +17,7 @@ public class Intake extends SubsystemBase {
 
     private final SparkMax pivot;
     private final SparkFlex spin;
+    private double speed;
     // private final SparkClosedLoopController pivotController;
 
     // private static final int GEAR_RATIO = 5 * 4;
@@ -80,9 +81,14 @@ public class Intake extends SubsystemBase {
 
     public void set(double k) {
         spin.set(k);
+        speed = k;
     }
 
     public void pivotSet(double k) {
         pivot.set(k);
+    }
+
+    public double speed() {
+        return speed;
     }
 }

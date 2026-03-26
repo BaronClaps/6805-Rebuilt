@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.swervedrive.drivebase.HeadingAim;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.*;
 import java.io.File;
@@ -46,6 +47,8 @@ public class RobotContainer
   private final Shooter shooter = new Shooter();
   private final Intake intake = new Intake();
   private final Transfer transfer = new Transfer();
+  private double shootRPM = 0, rpm = 100, transferSpeed = .5, intakeSpeed = .4;
+  public double shootSpeed = 0.8;
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing selection of desired auto
   private final SendableChooser<Command> autoChooser;
@@ -75,8 +78,8 @@ public class RobotContainer
                                                              .allianceRelativeControl(false);
 
   SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                        () -> -driverXbox.getLeftY(),
-                                                                        () -> -driverXbox.getLeftX())
+                                                                        () -> driverXbox.getLeftY(),
+                                                                        () -> driverXbox.getLeftX())
                                                                     .withControllerRotationAxis(() -> driverXbox.getRawAxis(
                                                                         2))
                                                                     .deadband(OperatorConstants.DEADBAND)
@@ -114,18 +117,22 @@ public class RobotContainer
     
     //Create the NamedCommands that will be used in PathPlanner
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+    NamedCommands.registerCommand("Aim", new HeadingAim(drivebase, Math.toRadians(-45)));
 
     //Have the autoChooser pull in all PathPlanner autos as options
     autoChooser = AutoBuilder.buildAutoChooser();
+    
 
     //Set the default auto (do nothing) 
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
 
-    //Add a simple auto option to have the robot drive forward for 1 second then stop
-    autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
-    
     //Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putData("Field", drivebase.getSwerveDrive().field);
+    SmartDashboard.putNumber("Shooter Velocity", shooter.getVelocity());
+    SmartDashboard.putNumber("Intake Speed", intake.speed());
+    SmartDashboard.putNumber("Transfer Speed", transfer.speed());
+
 
   }
 
@@ -149,17 +156,27 @@ public class RobotContainer
         driveDirectAngleKeyboard);
 
    intake.setDefaultCommand(
-    Commands.run(() -> intake.pivotSet(driverXbox2.getRightY() / 2), intake)
-);
-    driverXbox2.a().onTrue(Commands.runOnce(() -> { shooter.full(); transfer.set(.5); intake.set(.4);}));
-    driverXbox2.b().onTrue(Commands.runOnce(() -> { shooter.stop(); transfer.stop();}));
-    driverXbox2.rightTrigger().onTrue(Commands.runOnce(() -> { intake.set(.4); }));
-    driverXbox2.leftTrigger().onTrue(Commands.runOnce(() -> { intake.stop(); }));
-    driverXbox2.leftBumper().onTrue(Commands.runOnce(() -> { transfer.set(.5); }));
-    driverXbox2.rightBumper().onTrue(Commands.runOnce(() -> { shooter.full(); }));
+    Commands.run(() -> intake.pivotSet(driverXbox2.getRightY() / 3), intake)
+  );
+    driverXbox2.a().onTrue(Commands.runOnce(() -> { shooter.set(shootSpeed); transfer.set(transferSpeed); intake.set(intakeSpeed);}));
+    driverXbox2.b().onTrue(Commands.runOnce(() -> { shooter.set(0); transfer.stop();}));
+    driverXbox2.rightBumper().onTrue(Commands.runOnce(() -> { intake.set(intakeSpeed - driverXbox2.getLeftY()); }));
+    driverXbox2.leftBumper().onTrue(Commands.runOnce(() -> { intake.stop(); }));
+    driverXbox2.leftTrigger().onTrue(Commands.runOnce(() -> { transfer.set(transferSpeed + driverXbox2.getLeftX()); }));
+    driverXbox2.rightTrigger().onTrue(Commands.runOnce(() -> { shooter.set(shootSpeed); }));
+    driverXbox2.x().onTrue(Commands.runOnce(() -> { shootSpeed -= .1;}));
+    driverXbox2.y().onTrue(Commands.runOnce(() -> { shootSpeed += .1;}));
+    // driverXbox2.y().onTrue(Commands.runOnce(() -> { intakeSpeed += .1;}));
+    driverXbox.x().whileTrue(new HeadingAim(drivebase, Math.toRadians(45)));
+    driverXbox.b().whileTrue(new HeadingAim(drivebase, Math.toRadians(-45)));
+    driverXbox.a().onTrue(Commands.runOnce(() -> {drivebase.resetOdometry(new Pose2d(0,0, Rotation2d.kPi)); }));
 
+    // if (shootRPM != 0)
+    //   shootRPM = rpm;
 
-
+    // shooter.setDefaultCommand(
+    //   Commands.run(() -> shooter.setPower(shootRPM), shooter)
+    // );
 
     if (RobotBase.isSimulation())
     {
